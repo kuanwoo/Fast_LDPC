@@ -1,12 +1,12 @@
-CC=icc
+CC=c:\sandbox\P9\repo\prg_util_toolset\gcc\gcc-x86_64-w64-mingw32-810\bin\g++.exe
 
-CFLAGS=-I../cpp_src -W -Wall -O3 -march=native -fast -ansi-alias \
-			-fopenmp -finline -funroll-loops -no-prec-div -opt-prefetch -unroll-aggressive \
-			-m64 -auto-ilp32 -I../src -xCORE-AVX2 -fma -mkl -I/opt/local/include/
+CFLAGS=-I../cpp_src -W -Wall -O2 -g -march=native -Ofast \
+			-m64 -I../src -mavx2 -mfma \
+			-IC:\sandbox\P9\repo\prg_util_toolset\gcc\gcc-x86_64-w64-mingw32-810\lib\gcc\x86_64-w64-mingw32\8.1.0\include\
 
-LDFLAGS=-L/opt/local/lib -fopenmp -lboost_system-mt -lboost_timer-mt -mkl -lPcmMsr
+LDFLAGS=
 
-EXEC=main.icc
+EXEC=main.exe
 #CFLAGS=-Wa,-q -I../cpp_src -W -Wall -ansi -pedantic -O3 -Wall -funroll-loops -ftree-vectorize \
 #			-msse4a -march=native -mtune=native -ffast-math -fopenmp \
 #			-fstrict-aliasing -fprefetch-loop-arrays -I../src
@@ -40,7 +40,7 @@ OBJ= $(SRC:.cpp=.o)
 
 all: $(EXEC)
 
-main.icc: $(OBJ)
+main.exe: $(OBJ)
 	@echo "[LINKING] $@"
 	@$(CC) $(CFLAGS) -o $@ $^ $(LDFLAGS)
 
@@ -51,8 +51,7 @@ main.icc: $(OBJ)
 .PHONY: clean mrproper
 
 clean:
-	find ../src/ -name "*.o" -exec rm {} \;
-	find . -name "*.ic*" -exec rm {} \;
+	cd ../src && del /s *.o && cd ../bin
 
 mrproper: clean
 	rm $(EXEC)

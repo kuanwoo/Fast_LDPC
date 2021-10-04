@@ -19,8 +19,7 @@
 */
 
 #include "CChanelAWGN_MKL.h"
-
-
+#include <iostream>
 #ifndef VSL_METHOD_SGAUSSIAN_BOXMULLER2
 	#define VSL_METHOD_SGAUSSIAN_BOXMULLER2 1
 #endif
@@ -77,17 +76,19 @@ static int thread_id = 0;
 
 CChanelAWGN_MKL::CChanelAWGN_MKL(CTrame *t, int _BITS_LLR, bool QPSK, bool Es_N0)
     : CChanel(t, _BITS_LLR, QPSK, Es_N0){
-    int status = vslNewStream( &stream, VSL_BRNG_MT2203 + thread_id++ /*VSL_BRNG_MT2203*/, rand() );
-    if( status != VSL_STATUS_OK ){
-        printf("(EE) Error during vslNewStream execution\n");
-        printf("(EE) thread_id = %d\n", thread_id);
-        exit( 0 );
-    }
+    // int status = vslNewStream( &stream, VSL_BRNG_MT2203 + thread_id++ /*VSL_BRNG_MT2203*/, rand() );
+    // if( status != VSL_STATUS_OK ){
+    //     printf("(EE) Error during vslNewStream execution\n");
+    //     printf("(EE) thread_id = %d\n", thread_id);
+    //     exit( 0 );
+    // }
+    std::random_device rd{};
+    gen = std::mt19937{rd()};
     noise  = (float*)new __m128[_frames * _data / 4];
 }
 
 CChanelAWGN_MKL::~CChanelAWGN_MKL(){
-    vslDeleteStream( &stream );
+    // vslDeleteStream( &stream );
     delete noise;
     thread_id--;
 }
@@ -130,7 +131,14 @@ void CChanelAWGN_MKL::generate() {
     float mv = (qpsk) ? -QPSK : -BPSK; // BPSK OU QPSK (CODAGES LES + SIMPLES)
 
     int nbData = (_frames*_data);
-    vsRngGaussian( VSL_METHOD_SGAUSSIAN_BOXMULLER2, stream, nbData, (float*)noise, 0.0f, SigB );
+    for (uint32_t i = 0; i < nbData; i++)
+    {
+      noise[i] = (dist(gen));
+      /* code */
+    }
+    
+    // vsRngGaussian( VSL_METHOD_SGAUSSIAN_BOXMULLER2, stream, nbData, (float*)noise, 0.0f, SigB );
+    
 
     //
     // ON LAISSE ICC DEROULER LA BOUCLE AINSI C'EST SSE ET AVX COMPATIBLE (4 TIBO)

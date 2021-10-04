@@ -29,7 +29,9 @@
 #include <tmmintrin.h>
 #include <smmintrin.h>
 #include <immintrin.h>
-#include "mkl.h"
+// #include "mkl.h"
+#include <random>
+#include <vector>
 
 #define small_pi  3.1415926536
 #define _2pi  (2.0 * small_pi)
@@ -39,7 +41,9 @@ class CChanelAWGN_MKL : public CChanel
 private:
     double inv_erf(int v);
     float* noise;
-    VSLStreamStatePtr stream;
+    std::vector<float> stream;
+    std::normal_distribution<float> dist;
+    std::mt19937 gen;
     
 public:
     CChanelAWGN_MKL(CTrame *t, int _BITS_LLR, bool QPSK, bool Es_N0);

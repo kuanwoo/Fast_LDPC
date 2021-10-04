@@ -26,7 +26,7 @@
 
 using namespace std;
 
-#include <omp.h>
+// #include <omp.h>
 
 #define pi  3.1415926536
 #include "./CTimer/CTimer.h"
@@ -166,7 +166,7 @@ int main(int argc, char* argv[]) {
     // ON CONFIGURE LE NOMBRE DE THREAD A UTILISER PAR DEFAUT
     //
     int NUM_ACTIVE_THREADS = 1;
-    omp_set_num_threads(NUM_ACTIVE_THREADS);
+    // omp_set_num_threads(NUM_ACTIVE_THREADS);
 
     //
     // ON VA PARSER LES ARGUMENTS DE LIGNE DE COMMANDE
@@ -244,16 +244,16 @@ int main(int argc, char* argv[]) {
             //
         } else if (strcmp(argv[p], "-thread") == 0) {
             int nThreads = atoi(argv[p + 1]);
-            if (nThreads > 4) {
-                printf("(WW) Number of thread can be higher than 4 => Using 4 threads.");
-                NUM_ACTIVE_THREADS = 4;
+            if (nThreads > 1) {
+                printf("(WW) Number of thread cannot be higher than 1 => Using 1 threads.");
+                NUM_ACTIVE_THREADS = 1;
             } else if (nThreads < 1) {
                 printf("(WW) Number of thread can be lower than 1 => Using 1 thread.");
                 NUM_ACTIVE_THREADS = 1;
             } else {
                 NUM_ACTIVE_THREADS = nThreads;
             }
-            omp_set_num_threads(NUM_ACTIVE_THREADS);
+            // omp_set_num_threads(NUM_ACTIVE_THREADS);
             p += 1;
 
         //
@@ -468,10 +468,10 @@ int main(int argc, char* argv[]) {
             int d1[maxLoopF], d2[maxLoopF], d3[maxLoopF], d4[maxLoopF];
             int f1[maxLoopF], f2[maxLoopF], f3[maxLoopF], f4[maxLoopF];
 
-            #pragma omp parallel sections
+            // #pragma omp parallel sections
             {
 
-                #pragma omp section
+                // #pragma omp section
                 {
                     for (int q = 0; q < loopf; q++) {
                         float *f_llr = simu_data[0]->get_t_noise_data(); // [NOEUD];
@@ -497,7 +497,7 @@ int main(int argc, char* argv[]) {
                     }
                 }
 
-                #pragma omp section
+                // #pragma omp section
                 {
                     for (int q = 0; q < loopf; q++) {
                         float *f_llr = simu_data[1]->get_t_noise_data(); // [NOEUD];
@@ -522,7 +522,7 @@ int main(int argc, char* argv[]) {
                     }
                 }
 
-                #pragma omp section
+                // #pragma omp section
                 {
                     for (int q = 0; q < loopf; q++) {
                         float *f_llr = simu_data[2]->get_t_noise_data();   // [NOEUD];
@@ -547,7 +547,7 @@ int main(int argc, char* argv[]) {
                     }
                 }
 
-                #pragma omp section
+                // #pragma omp section
                 {
                     for (int q = 0; q < loopf; q++) {
                         float *f_llr = simu_data[3]->get_t_noise_data(); // [NOEUD];
@@ -684,81 +684,81 @@ int main(int argc, char* argv[]) {
             printf("(PERF1) LDPC decoder air throughput = %1.3f Mbps\n", debit);
         }
 
-        //
-        // TWO THREAD MODE
-        //
-        if (NUM_ACTIVE_THREADS == 2) {
-            exec = 0;
-            omp_set_num_threads(2);
-            CTimer t_Timer2(true);
+        // //
+        // // TWO THREAD MODE
+        // //
+        // if (NUM_ACTIVE_THREADS == 2) {
+        //     exec = 0;
+        //     // omp_set_num_threads(2);
+        //     CTimer t_Timer2(true);
 
-            while (t_Timer2.get_time_sec() < t_eval) {
-                const int looper = 256;
-                #pragma omp parallel sections
-                {
-                    #pragma omp section
-                    {
-                        for (int qq = 0; qq < looper; qq++)
-                            decoder[0]->decode(simu_data[0]->get_t_fpoint_data(), simu_data[1]->get_t_decode_data(), NOMBRE_ITERATIONS);
-                    }
-                    #pragma omp section
-                    {
-                        for (int qq = 0; qq < looper; qq++)
-                            decoder[1]->decode(simu_data[1]->get_t_fpoint_data(), simu_data[2]->get_t_decode_data(), NOMBRE_ITERATIONS);
-                    }
-                }
-                exec += 2 * looper;
-            }
-            t_Timer2.stop();
+        //     while (t_Timer2.get_time_sec() < t_eval) {
+        //         const int looper = 256;
+        //         #pragma omp parallel sections
+        //         {
+        //             #pragma omp section
+        //             {
+        //                 for (int qq = 0; qq < looper; qq++)
+        //                     decoder[0]->decode(simu_data[0]->get_t_fpoint_data(), simu_data[1]->get_t_decode_data(), NOMBRE_ITERATIONS);
+        //             }
+        //             #pragma omp section
+        //             {
+        //                 for (int qq = 0; qq < looper; qq++)
+        //                     decoder[1]->decode(simu_data[1]->get_t_fpoint_data(), simu_data[2]->get_t_decode_data(), NOMBRE_ITERATIONS);
+        //             }
+        //         }
+        //         exec += 2 * looper;
+        //     }
+        //     t_Timer2.stop();
 
-            // for each decoder run, we decoded nb_frames codewords (depending on the SIMD width)
-            float debit = _N * ((exec * nb_frames) / ((float) t_Timer2.get_time_sec()));
-            debit /= 1000000.0f;
-            printf("(PERF2) LDPC decoder air throughput = %1.3f Mbps\n", debit);
-        }
+        //     // for each decoder run, we decoded nb_frames codewords (depending on the SIMD width)
+        //     float debit = _N * ((exec * nb_frames) / ((float) t_Timer2.get_time_sec()));
+        //     debit /= 1000000.0f;
+        //     printf("(PERF2) LDPC decoder air throughput = %1.3f Mbps\n", debit);
+        // }
 
 
-        //
-        // FOUR THREAD MODE
-        //
-        if (NUM_ACTIVE_THREADS == 4) {
-            exec = 0;
-            omp_set_num_threads(4);
-            CTimer t_Timer3(true);
+        // //
+        // // FOUR THREAD MODE
+        // //
+        // if (NUM_ACTIVE_THREADS == 4) {
+        //     exec = 0;
+        //     omp_set_num_threads(4);
+        //     CTimer t_Timer3(true);
 
-            while (t_Timer3.get_time_sec() < t_eval) {
-                const int looper = 256;
-                #pragma omp parallel sections
-                {
-                    #pragma omp section
-                    {
-                        for (int qq = 0; qq < looper; qq++)
-                            decoder[0]->decode(simu_data[0]->get_t_fpoint_data(), simu_data[0]->get_t_decode_data(), NOMBRE_ITERATIONS);
-                    }
-                    #pragma omp section
-                    {
-                        for (int qq = 0; qq < looper; qq++)
-                            decoder[1]->decode(simu_data[1]->get_t_fpoint_data(), simu_data[1]->get_t_decode_data(), NOMBRE_ITERATIONS);
-                    }
-                    #pragma omp section
-                        {
-                        for (int qq = 0; qq < looper; qq++)
-                            decoder[2]->decode(simu_data[2]->get_t_fpoint_data(), simu_data[2]->get_t_decode_data(), NOMBRE_ITERATIONS);
-                    }
-                    #pragma omp section
-                    {
-                        for (int qq = 0; qq < looper; qq++)
-                            decoder[3]->decode(simu_data[3]->get_t_fpoint_data(), simu_data[3]->get_t_decode_data(), NOMBRE_ITERATIONS);
-                    }
-                }
-                exec += 4 * looper;
-            }
-            t_Timer3.stop();
+        //     while (t_Timer3.get_time_sec() < t_eval) {
+        //         const int looper = 256;
+        //         #pragma omp parallel sections
+        //         {
+        //             #pragma omp section
+        //             {
+        //                 for (int qq = 0; qq < looper; qq++)
+        //                     decoder[0]->decode(simu_data[0]->get_t_fpoint_data(), simu_data[0]->get_t_decode_data(), NOMBRE_ITERATIONS);
+        //             }
+        //             #pragma omp section
+        //             {
+        //                 for (int qq = 0; qq < looper; qq++)
+        //                     decoder[1]->decode(simu_data[1]->get_t_fpoint_data(), simu_data[1]->get_t_decode_data(), NOMBRE_ITERATIONS);
+        //             }
+        //             #pragma omp section
+        //                 {
+        //                 for (int qq = 0; qq < looper; qq++)
+        //                     decoder[2]->decode(simu_data[2]->get_t_fpoint_data(), simu_data[2]->get_t_decode_data(), NOMBRE_ITERATIONS);
+        //             }
+        //             #pragma omp section
+        //             {
+        //                 for (int qq = 0; qq < looper; qq++)
+        //                     decoder[3]->decode(simu_data[3]->get_t_fpoint_data(), simu_data[3]->get_t_decode_data(), NOMBRE_ITERATIONS);
+        //             }
+        //         }
+        //         exec += 4 * looper;
+        //     }
+        //     t_Timer3.stop();
 
-            float debit = _N * ((exec * nb_frames) / ((float) t_Timer3.get_time_sec()));
-            debit /= 1000000.0f;
-            printf("(PERF4) LDPC decoder air throughput = %1.3f Mbps\n", debit);
-        }
+        //     float debit = _N * ((exec * nb_frames) / ((float) t_Timer3.get_time_sec()));
+        //     debit /= 1000000.0f;
+        //     printf("(PERF4) LDPC decoder air throughput = %1.3f Mbps\n", debit);
+        // }
         exit(0);
     }
     //
