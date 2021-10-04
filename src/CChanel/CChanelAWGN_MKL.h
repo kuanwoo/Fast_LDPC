@@ -42,8 +42,8 @@ private:
     double inv_erf(int v);
     float* noise;
     std::vector<float> stream;
-    std::normal_distribution<float> dist;
-    std::mt19937 gen;
+    // std::normal_distribution<float> dist;
+    // std::mt19937 gen;
     
 public:
     CChanelAWGN_MKL(CTrame *t, int _BITS_LLR, bool QPSK, bool Es_N0);

@@ -82,9 +82,13 @@ CChanelAWGN_MKL::CChanelAWGN_MKL(CTrame *t, int _BITS_LLR, bool QPSK, bool Es_N0
     //     printf("(EE) thread_id = %d\n", thread_id);
     //     exit( 0 );
     // }
-    std::random_device rd{};
-    gen = std::mt19937{rd()};
+    // std::random_device rd{};
+    // gen = std::mt19937{rd()};
     noise  = (float*)new __m128[_frames * _data / 4];
+    for (uint32_t i = 0; i < _frames * _data; i++)
+    {
+      noise[i] = 0.0f;
+    }
 }
 
 CChanelAWGN_MKL::~CChanelAWGN_MKL(){
@@ -131,11 +135,11 @@ void CChanelAWGN_MKL::generate() {
     float mv = (qpsk) ? -QPSK : -BPSK; // BPSK OU QPSK (CODAGES LES + SIMPLES)
 
     int nbData = (_frames*_data);
-    for (uint32_t i = 0; i < nbData; i++)
-    {
-      noise[i] = (dist(gen));
-      /* code */
-    }
+    // for (uint32_t i = 0; i < nbData; i++)
+    // {
+    //   noise[i] = (dist(gen));
+    //   /* code */
+    // }
     
     // vsRngGaussian( VSL_METHOD_SGAUSSIAN_BOXMULLER2, stream, nbData, (float*)noise, 0.0f, SigB );
     
