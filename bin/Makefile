@@ -1,6 +1,6 @@
 CC=c:\sandbox\P9\repo\prg_util_toolset\gcc\gcc-x86_64-w64-mingw32-810\bin\g++.exe
 
-CFLAGS=-I../cpp_src -W -Wall -O2 -g -march=native -Ofast \
+CFLAGS=-I../cpp_src -W -Wall -O2 -g -Ofast -std=c++17 \
 			-m64 -I../src -mavx2 -mfma \
 			-IC:\sandbox\P9\repo\prg_util_toolset\gcc\gcc-x86_64-w64-mingw32-810\lib\gcc\x86_64-w64-mingw32\8.1.0\include\
 

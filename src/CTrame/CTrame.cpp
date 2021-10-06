@@ -19,29 +19,30 @@
 */
 
 #include "CTrame.h"
+#include <new>
 
 CTrame::CTrame(int width, int height){
     _width        = width;
     _height       = height;
     _frame        = 1;
-    t_in_bits     = new int[ nb_frames() * nb_vars() ];
-    t_coded_bits  = new int[ nb_frames() * nb_data() ];
-    t_noise_data  = new float[ nb_frames() * nb_data() + 4 ];
-    t_fpoint_data = new char[ nb_frames() * nb_data() ];
-    t_decode_data = new char[ nb_frames() * nb_data() ];
-    t_decode_bits = new char[ nb_frames() * nb_vars() ];
+    t_in_bits     = new (std::align_val_t{ 32 }) int[ nb_frames() * nb_vars() ];
+    t_coded_bits  = new (std::align_val_t{ 32 }) int[ nb_frames() * nb_data() ];
+    t_noise_data  = new (std::align_val_t{ 32 }) float[ nb_frames() * nb_data() + 4 ];
+    t_fpoint_data = new (std::align_val_t{ 32 }) char[ nb_frames() * nb_data() ];
+    t_decode_data = new (std::align_val_t{ 32 }) char[ nb_frames() * nb_data() ];
+    t_decode_bits = new (std::align_val_t{ 32 }) char[ nb_frames() * nb_vars() ];
 }
 
 CTrame::CTrame(int width, int height, int frame){
     _width        = width;
     _height       = height;
     _frame        = frame;
-    t_in_bits     = new int[ nb_frames() *nb_vars() ];
-    t_coded_bits  = new int[ nb_frames() *nb_data() ];
-    t_noise_data  = new float[ nb_frames() *nb_data() + 4];
-    t_fpoint_data = new char[ nb_frames() *nb_data() ];
-    t_decode_data = new char[ nb_frames() *nb_data() ];
-    t_decode_bits = new char[ nb_frames() *nb_vars() ];
+    t_in_bits     = new (std::align_val_t{ 32 }) int[ nb_frames() * nb_vars() ];
+    t_coded_bits  = new (std::align_val_t{ 32 }) int[ nb_frames() * nb_data() ];
+    t_noise_data  = new (std::align_val_t{ 32 }) float[ nb_frames() * nb_data() + 4 ];
+    t_fpoint_data = new (std::align_val_t{ 32 }) char[ nb_frames() * nb_data() ];
+    t_decode_data = new (std::align_val_t{ 32 }) char[ nb_frames() * nb_data() ];
+    t_decode_bits = new (std::align_val_t{ 32 }) char[ nb_frames() * nb_vars() ];
 }
 
 CTrame::~CTrame(){

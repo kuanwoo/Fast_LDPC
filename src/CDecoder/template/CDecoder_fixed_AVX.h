@@ -36,8 +36,8 @@
 
 class CDecoder_fixed_AVX : public CDecoder_fixed{
 protected:
-    __m256i* var_nodes;
-    __m256i* var_mesgs;
+    alignas(32) __m256i var_nodes[NOEUD];
+    alignas(32) __m256i var_mesgs[MESSAGE];
 
 public:
     CDecoder_fixed_AVX();

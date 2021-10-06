@@ -1,7 +1,7 @@
 CC=C:\sandbox\P9\repo\prg_util_toolset\gcc\pu-sdk-mingw-w64-15.1.0\sysroots\x86_64-pubspsdk-mingw32\usr\bin\x86_64-pubsp-linux\x86_64-pubsp-linux-g++.exe
 
 CFLAGS=--sysroot=C:/sandbox/P9/repo/prg_util_toolset/gcc/pu-sdk-mingw-w64-15.1.0/sysroots/core2-64-pubsp-linux \
-			-I../cpp_src -W -Wall -O2 -g -march=znver1 -Ofast \
+			-I../cpp_src -W -Wall -O2 -Ofast -std=c++17 \
 			-m64 -I../src -mavx2 -mfma
 
 LDFLAGS=
